@@ -1,15 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Data.Entity;
 using System.Linq;
-using System.Runtime.Remoting.Contexts;
+using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
 
 namespace Sitnik160225
 {
-    internal class ToDoContext : DbContext
+    public class ToDoContext : DbContext
     {
-        public DbSet<ToDo> ToDos { get; set; }
+
+        public System.Data.Entity.DbSet<ToDo> ToDos { get; set; }
+       
+
+        // Важно указать строку подключения в конструкторе или в файле конфигурации
+        public ToDoContext() : base("name=MyDbConnectionString") { }
+
     }
 }

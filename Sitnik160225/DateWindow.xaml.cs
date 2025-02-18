@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 
 namespace Sitnik160225
 {
@@ -63,10 +64,6 @@ namespace Sitnik160225
             // Обновление списка задач после добавления новой задачи
             var viewModel = (ToDoViewModel)this.DataContext;
 
-            // Обновляем список задач в DataContext
-            viewModel.UpdateToDo(viewModel.NewToDo);
-            viewModel.Save();
-
             // Уведомление о добавлении задачи
             MessageBox.Show("Задача добавлена. Список задач обновлен!");
         }
@@ -76,5 +73,82 @@ namespace Sitnik160225
         {
             this.Close(); // Закрытие текущего окна
         }
+
+        private void DeleteTask_Click(object sender, RoutedEventArgs e)
+        {
+            var taskToDelete = (ToDo)((MenuItem)sender).DataContext;
+            viewModel.RemoveToDo(taskToDelete);  // Удаляем задачу через ViewModel
+        }
+
+        // Обработчик для двойного щелчка по элементу в ListBox
+        private void ListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var listBox = sender as ListBox;
+            if (listBox != null)
+            {
+                var selectedTask = listBox.SelectedItem as ToDo;
+                if (selectedTask != null)
+                {
+                    var menu = listBox.ContextMenu;
+                    menu.IsOpen = true; // Открываем контекстное меню
+                }
+            }
+        }
+
+        // Обработчик для копирования задачи
+        private void CopyTask_Click(object sender, RoutedEventArgs e)
+        {
+            var taskToCopy = (ToDo)((MenuItem)sender).DataContext;
+
+            // Показываем элементы для выбора новой даты и кнопку подтверждения
+            DatePickerPanel.Visibility = Visibility.Visible;
+            ConfirmCopyButton.Visibility = Visibility.Visible;
+
+            // Сохраняем задачу для копирования
+            DataContext = taskToCopy; // Сохраняем текущую задачу, чтобы позже создать её копию
+        }
+
+        // Обработчик для кнопки "Подтвердить" при копировании задачи
+        private void ConfirmCopyButton_Click(object sender, RoutedEventArgs e)
+        {
+            var taskToCopy = DataContext as ToDo;
+            if (taskToCopy != null && TaskDueDatePicker.SelectedDate.HasValue)
+            {
+                // Логика копирования задачи на новую дату
+                var newTask = new ToDo
+                {
+                    Bezeichnung = taskToCopy.Bezeichnung,
+                    Beschreibung = taskToCopy.Beschreibung,
+                    Prioritaet = taskToCopy.Prioritaet,
+                    IstAbgeschlossen = taskToCopy.IstAbgeschlossen,
+                    DueDate = TaskDueDatePicker.SelectedDate.Value
+                };
+
+                viewModel.AddToDo(newTask); // Добавляем новую задачу в ViewModel
+
+                // Скрываем панель выбора даты и кнопку подтверждения
+                DatePickerPanel.Visibility = Visibility.Collapsed;
+                ConfirmCopyButton.Visibility = Visibility.Collapsed;
+
+                MessageBox.Show("Задача успешно скопирована на новую дату!");
+            }
+            else
+            {
+                MessageBox.Show("Пожалуйста, выберите дату для копирования задачи.");
+            }
+        }
+
+        // Обработчик для кнопки "Отмена" при копировании задачи
+        private void CancelCopyButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Скрываем панель выбора даты и кнопку подтверждения
+            DatePickerPanel.Visibility = Visibility.Collapsed;
+            ConfirmCopyButton.Visibility = Visibility.Collapsed;
+            CancelCopyButton.Visibility = Visibility.Collapsed; // Скрыть кнопку "Отмена"
+
+            // Показываем список задач и другие элементы управления
+            TaskDetailsPanel.Visibility = Visibility.Collapsed; // Скрыть панель с деталями задачи, если она была открыта
+        }
+
     }
 }

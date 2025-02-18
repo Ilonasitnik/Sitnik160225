@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 
+
+
 internal class ToDoViewModel : INotifyPropertyChanged
 {
     public ObservableCollection<ToDo> TodoList { get; set; }
@@ -11,6 +13,20 @@ internal class ToDoViewModel : INotifyPropertyChanged
 
     private int _todoAnzahl;
     private int _prioritaet;
+
+
+
+    // Use the Save method to add the task
+    public void AddToDo(ToDo newToDo)
+    {
+        if (newToDo != null)
+        {
+            TodoList.Add(newToDo);
+            TodoAnzahl = TodoList.Count;
+            InformGUI(nameof(TodoList));
+        }
+    }
+
 
     // Событие для уведомления об изменениях
     public event PropertyChangedEventHandler PropertyChanged;
@@ -64,8 +80,6 @@ internal class ToDoViewModel : INotifyPropertyChanged
             }
         }
     }
-
-    // Конструктор для инициализации начальных данных
     public ToDoViewModel()
     {
         // Инициализация списка задач как пустого
@@ -74,37 +88,6 @@ internal class ToDoViewModel : INotifyPropertyChanged
         // Инициализация NewToDo как пустой задачи
         NewToDo = new ToDo();
 
-        // Добавление нескольких задач для тестирования с добавлением пути к фото
-        TodoList.Add(new ToDo
-        {
-            ID = 1,
-            Bezeichnung = "Task 1",
-            Beschreibung = "description for Task 1",
-            Prioritaet = 1,
-            IstAbgeschlossen = false,
-            FotoPath = "Images/Task1.png" // Пример пути к изображению
-        });
-
-        TodoList.Add(new ToDo
-        {
-            ID = 2,
-            Bezeichnung = "Task 2",
-            Beschreibung = "description for Task 2",
-            Prioritaet = 2,
-            IstAbgeschlossen = false,
-            FotoPath = "Images/Task2.png"
-        });
-
-        TodoList.Add(new ToDo
-        {
-            ID = 3,
-            Bezeichnung = "Task 3",
-            Beschreibung = "description for Task 3",
-            Prioritaet = 3,
-            IstAbgeschlossen = false,
-            FotoPath = "Images/Task3.png"
-        });
-
         // Обновляем количество задач
         TodoAnzahl = TodoList.Count;
 
@@ -112,23 +95,40 @@ internal class ToDoViewModel : INotifyPropertyChanged
         InformGUI(nameof(TodoList));
     }
 
+
+    // Метод для добавления задачи
     // Метод для добавления задачи
     public void Save()
     {
-        if (NewToDo != null && !string.IsNullOrEmpty(NewToDo.Bezeichnung)) // Проверка на пустое имя задачи
+        if (NewToDo != null && !string.IsNullOrEmpty(NewToDo.Bezeichnung))
         {
+            // Добавление задачи в список
             TodoList.Add(NewToDo);
+
+            // Уведомляем интерфейс о добавлении новой задачи
+            InformGUI(nameof(TodoList));
+
+            // Обновляем количество задач
             TodoAnzahl = TodoList.Count;
-            NewToDo = new ToDo();  // Очистка для новой задачи
-            InformGUI(nameof(TodoList));  // Уведомление UI о изменении TodoList
-            InformGUI(nameof(NewToDo));   // Уведомление UI о изменении NewToDo
-            SelectedToDo = TodoList.LastOrDefault(); // Выбор последней добавленной задачи
+
+            // Оповещаем, что задача была успешно сохранена
+            MessageBox.Show("Task saved successfully!");
+
+            // Очищаем NewToDo для следующей задачи
+            NewToDo = new ToDo();
+
+            // Выбираем последнюю добавленную задачу
+            SelectedToDo = TodoList.LastOrDefault();
         }
         else
         {
-            MessageBox.Show("Task name cannot be empty!");  // Показ сообщения, если имя задачи пустое
+            // Если имя задачи пустое, показываем предупреждение
+            MessageBox.Show("Task name cannot be empty!");
         }
     }
+
+
+
 
     // Метод для изменения состояния задачи (выполнена/не выполнена)
     public void ToggleTaskCompletion(ToDo task)
@@ -164,4 +164,8 @@ internal class ToDoViewModel : INotifyPropertyChanged
             InformGUI(nameof(TodoList));  // Уведомляем UI, что список задач изменился
         }
     }
+    
+
+
+
 }

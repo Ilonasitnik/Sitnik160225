@@ -25,8 +25,7 @@ namespace Sitnik160225
         public NewTask()
         {
             InitializeComponent();
-            var viewModel = new ToDoViewModel();
-            this.DataContext = viewModel;
+            this.DataContext = new ToDoViewModel(); // Установка контекста данных
         }
 
         // Обработчик события для кнопки "Add Photo"
@@ -108,38 +107,35 @@ namespace Sitnik160225
                 textBox.Text = "Enter task priority";
             }
         }
-
+        // Обработчик кнопки "Сохранить"
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             var viewModel = (ToDoViewModel)this.DataContext;
 
-            // Обновляем NewToDo с актуальными данными с формы
-            viewModel.NewToDo.Bezeichnung = TaskNameTextBox.Text;  // Название задачи
-            viewModel.NewToDo.Beschreibung = TaskDescriptionTextBox.Text;  // Описание задачи
-            viewModel.NewToDo.Prioritaet = (int)PrioritySlider.Value;  // Приоритет задачи
+            // Выводим текущие задачи перед добавлением
+            var currentTasks = string.Join("\n", viewModel.TodoList.Select(t => t.Bezeichnung));
+            MessageBox.Show("Задачи перед добавлением: \n" + currentTasks);
 
-            // Проверяем, что данные передаются корректно
-            MessageBox.Show($"Task Name: {viewModel.NewToDo.Bezeichnung}, Description: {viewModel.NewToDo.Beschreibung}, Priority: {viewModel.NewToDo.Prioritaet}");
+            // Обновляем NewToDo с актуальными данными с формы
+            viewModel.NewToDo.Bezeichnung = TaskNameTextBox.Text;
+            viewModel.NewToDo.Beschreibung = TaskDescriptionTextBox.Text;
+            viewModel.NewToDo.Prioritaet = (int)PrioritySlider.Value;
 
             // Сохраняем задачу
             viewModel.Save();
 
-            // Уведомление, что задача сохранена
-            MessageBox.Show("Task saved successfully!");
-
-            // Выводим количество задач в TodoList
-            MessageBox.Show($"Number of tasks in TodoList: {viewModel.TodoList.Count}");
-
-            // Выводим все задачи в TodoList для проверки
-            var taskDetails = string.Join("\n", viewModel.TodoList.Select(t => $"Name: {t.Bezeichnung}, Description: {t.Beschreibung}, Priority: {t.Prioritaet}"));
-            MessageBox.Show($"Current tasks in TodoList:\n{taskDetails}");
+            // Выводим список задач после добавления
+            var updatedTasks = string.Join("\n", viewModel.TodoList.Select(t => t.Bezeichnung));
+            MessageBox.Show("Задачи после добавления: \n" + updatedTasks);
 
             // Вызов события после сохранения задачи
             TaskSaved?.Invoke();
-
+            MessageBox.Show("Задача успешно сохранена");
+            MessageBox.Show("Задачи после добавления: \n" + updatedTasks);
             // Закрытие окна после сохранения
             this.Close();
         }
+
 
 
 
