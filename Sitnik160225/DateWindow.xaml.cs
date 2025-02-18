@@ -1,16 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace Sitnik160225
 {
@@ -21,6 +12,7 @@ namespace Sitnik160225
     {
         private ToDoViewModel viewModel;
         public DateTime SelectedDate { get; set; }
+
         public DateWindow(DateTime selectedDate)
         {
             InitializeComponent();
@@ -28,7 +20,19 @@ namespace Sitnik160225
             viewModel = new ToDoViewModel();  // Создаем экземпляр ViewModel
             this.DataContext = viewModel;
 
+            // Подписка на изменение выбранной задачи
+            viewModel.PropertyChanged += ViewModel_PropertyChanged;
         }
+
+        private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "SelectedToDo")
+            {
+                // Управляем видимостью правой панели в зависимости от выбора задачи
+                TaskDetailsPanel.Visibility = viewModel.SelectedToDo != null ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+
         private void AddNewTask_Click(object sender, RoutedEventArgs e)
         {
             var newTaskWindow = new NewTask(); // Открытие окна для создания новой задачи
@@ -39,25 +43,38 @@ namespace Sitnik160225
             newTaskWindow.ShowDialog(); // Отображение окна
         }
 
-        private void NewTaskWindow_TaskSaved()
+        private void ChangeTask_Click(object sender, RoutedEventArgs e)
         {
-            // Метод для обновления списка задач после того, как новая задача добавлена
-            var viewModel = (ToDoViewModel)this.DataContext;
-
-            // Вызываем метод для обновления данных в DataContext, если это необходимо
-            viewModel.UpdateToDo(viewModel.NewToDo);  // Обновить список задач в DataContext
-            viewModel.Save();
-            // Уведомляем пользователя об успешном обновлении
-            MessageBox.Show("Задача добавлена. Список задач обновлен!");
+            // Проверка на наличие выбранной задачи
+            if (viewModel.SelectedToDo != null)
+            {
+                // Логика изменения задачи
+                // Здесь можно добавить код для обновления задачи в базе данных или списке
+                MessageBox.Show("Задача была успешно изменена!");
+            }
+            else
+            {
+                MessageBox.Show("Пожалуйста, выберите задачу для изменения.");
+            }
         }
 
+        private void NewTaskWindow_TaskSaved()
+        {
+            // Обновление списка задач после добавления новой задачи
+            var viewModel = (ToDoViewModel)this.DataContext;
 
+            // Обновляем список задач в DataContext
+            viewModel.UpdateToDo(viewModel.NewToDo);
+            viewModel.Save();
+
+            // Уведомление о добавлении задачи
+            MessageBox.Show("Задача добавлена. Список задач обновлен!");
+        }
 
         // Обработчик для кнопки "Закрыть"
         private void CloseWindow_Click(object sender, RoutedEventArgs e)
         {
             this.Close(); // Закрытие текущего окна
-           
         }
     }
 }

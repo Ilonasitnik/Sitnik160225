@@ -12,19 +12,17 @@
 
         <!-- Поле для ввода названия задачи -->
         <TextBox Name="TaskNameTextBox" Width="350" Height="30" Margin="0,0,0,10" 
-     HorizontalAlignment="Center" 
-     Text="{Binding NewToDo.Bezeichnung, UpdateSourceTrigger=PropertyChanged}" 
-     ToolTip="Enter task name"
-     GotFocus="TaskNameTextBox_GotFocus" LostFocus="TaskNameTextBox_LostFocus">
+                 HorizontalAlignment="Center" 
+                 Text="{Binding NewToDo.Bezeichnung, UpdateSourceTrigger=PropertyChanged}" 
+                 ToolTip="Enter task name"
+                 GotFocus="TaskNameTextBox_GotFocus" LostFocus="TaskNameTextBox_LostFocus">
             <TextBox.Style>
                 <Style TargetType="TextBox">
                     <Setter Property="Text" Value="Enter task name" />
                     <Style.Triggers>
-                        <!-- При фокусе убираем placeholder, если текст пустой -->
                         <DataTrigger Binding="{Binding Text, RelativeSource={RelativeSource Self}}" Value="Enter task name">
                             <Setter Property="Text" Value=""/>
                         </DataTrigger>
-                        <!-- При потере фокуса восстанавливаем placeholder, если текст пустой -->
                         <DataTrigger Binding="{Binding Text, RelativeSource={RelativeSource Self}}" Value="">
                             <Setter Property="Text" Value="Enter task name" />
                         </DataTrigger>
@@ -35,8 +33,8 @@
 
         <!-- Поле для ввода описания задачи -->
         <TextBox Name="TaskDescriptionTextBox" Width="350" Height="100" Margin="0,0,0,10" 
-             HorizontalAlignment="Center" Text="{Binding NewToDo.Beschreibung}" 
-             ToolTip="Enter task description" GotFocus="TaskDescriptionTextBox_GotFocus" LostFocus="TaskDescriptionTextBox_LostFocus">
+                 HorizontalAlignment="Center" Text="{Binding NewToDo.Beschreibung}" 
+                 ToolTip="Enter task description" GotFocus="TaskDescriptionTextBox_GotFocus" LostFocus="TaskDescriptionTextBox_LostFocus">
             <TextBox.Style>
                 <Style TargetType="TextBox">
                     <Setter Property="Text" Value="Enter task description" />
@@ -51,18 +49,21 @@
 
         <!-- Поле для ввода приоритета задачи (ComboBox) -->
         <ComboBox Name="TaskPriorityComboBox" Width="350" Height="30" Margin="0,0,0,10" 
-              HorizontalAlignment="Center" SelectedItem="{Binding NewToDo.Prioritaet}" 
-              ToolTip="Select task priority">
+                  HorizontalAlignment="Center" 
+                  SelectedValue="{Binding Prioritaet, Mode=TwoWay}" 
+                  ToolTip="Select task priority">
             <ComboBox.Items>
                 <ComboBoxItem Content="Low" Tag="1" />
                 <ComboBoxItem Content="Medium" Tag="2" />
                 <ComboBoxItem Content="High" Tag="3" />
             </ComboBox.Items>
+            <ComboBox.SelectedValuePath>Tag</ComboBox.SelectedValuePath>
+            <!-- Указываем путь к значению -->
         </ComboBox>
 
         <!-- Бегунок для отображения приоритета -->
         <Slider Name="PrioritySlider" Width="350" Height="30" Margin="0,10" Minimum="1" Maximum="3" 
-            Value="{Binding NewToDo.Prioritaet}" TickFrequency="1" IsSnapToTickEnabled="True">
+                Value="{Binding Prioritaet, Mode=TwoWay}" TickFrequency="1" IsSnapToTickEnabled="True">
             <Slider.Resources>
                 <Style TargetType="Slider">
                     <Style.Triggers>
@@ -82,7 +83,7 @@
 
         <!-- Кнопка для добавления фотографии -->
         <Button Name="AddPhotoButton" Content="Add Photo" Width="350" Height="40" 
-            HorizontalAlignment="Center" Margin="0,10" Click="AddPhotoButton_Click" />
+                HorizontalAlignment="Center" Margin="0,10" Click="AddPhotoButton_Click" />
 
         <!-- Контейнер для отображения изображения -->
         <Image Name="TaskImage" Width="350" Height="200" HorizontalAlignment="Center" Margin="0,10" />
@@ -91,13 +92,13 @@
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20">
             <!-- Кнопка "Сохранить" -->
             <Button Name="SaveButton" Content="Save Task" Width="150" Height="40" 
-                HorizontalAlignment="Center" Margin="10,0" Background="Green" Foreground="White" 
-                Click="SaveButton_Click" />
+                    HorizontalAlignment="Center" Margin="10,0" Background="Green" Foreground="White" 
+                    Click="SaveButton_Click" />
 
             <!-- Кнопка "Отменить" -->
             <Button Name="CancelButton" Content="Cancel" Width="150" Height="40" 
-                HorizontalAlignment="Center" Margin="10,0" Background="Red" Foreground="White" 
-                Click="CancelButton_Click" />
+                    HorizontalAlignment="Center" Margin="10,0" Background="Red" Foreground="White" 
+                    Click="CancelButton_Click" />
         </StackPanel>
     </StackPanel>
 </Window>
