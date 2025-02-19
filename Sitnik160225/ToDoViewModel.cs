@@ -1,33 +1,37 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Sitnik160225
 {
     internal class ToDoViewModel : INotifyPropertyChanged
     {
+        // Observable collection to hold the ToDo items
         public ObservableCollection<ToDo> TodoList { get; set; }
+
+        // Repository to interact with the database
         private ToDoRepo _repo;
+
+        // Selected task in the UI
         private ToDo _selectedToDo;
+
+        // Total count of tasks (used for UI display)
         private int _todoAnzahl;
+
+        // Currently selected date
         private DateTime _selectedDate;
 
-
-
-        // Загружаем задачи для выбранной даты
-       
-        public async Task LoadTasksForSelectedDateAsync(DateTime selectedDate)
+        // Constructor to initialize the ViewModel
+        public ToDoViewModel()
         {
-            var tasks = await _repo.GetToDosByDateAsync(selectedDate);
-            TodoList.Clear();
-            foreach (var task in tasks)
-            {
-                TodoList.Add(task);
-            }
+            TodoList = new ObservableCollection<ToDo>();
+            SelectedDate = DateTime.Now; // Set the default date to now
+            _repo = new ToDoRepo(); // Initialize the repository
         }
 
-
+        // Property for SelectedToDo
         public ToDo SelectedToDo
         {
             get { return _selectedToDo; }
@@ -36,11 +40,12 @@ namespace Sitnik160225
                 if (_selectedToDo != value)
                 {
                     _selectedToDo = value;
-                    InformGUI(nameof(SelectedToDo));
+                    InformGUI(nameof(SelectedToDo)); // Notify UI about the change
                 }
             }
         }
 
+        // Property for SelectedDate
         public DateTime SelectedDate
         {
             get { return _selectedDate; }
@@ -49,11 +54,12 @@ namespace Sitnik160225
                 if (_selectedDate != value)
                 {
                     _selectedDate = value;
-                    InformGUI(nameof(SelectedDate));
+                    InformGUI(nameof(SelectedDate)); // Notify UI about the change
                 }
             }
         }
 
+        // Property for TodoAnzahl (Total count of tasks)
         public int TodoAnzahl
         {
             get { return _todoAnzahl; }
@@ -62,46 +68,74 @@ namespace Sitnik160225
                 if (_todoAnzahl != value)
                 {
                     _todoAnzahl = value;
-                    InformGUI(nameof(TodoAnzahl));
+                    InformGUI(nameof(TodoAnzahl)); // Notify UI about the change
                 }
             }
         }
 
-        public ToDoViewModel()
+        // Method to load tasks for the selected date
+        public async Task LoadTasksForSelectedDateAsync(DateTime selectedDate)
         {
-            TodoList = new ObservableCollection<ToDo>();
-            SelectedDate = DateTime.Now; // Устанавливаем текущую дату по умолчанию
-            _repo = new ToDoRepo();
-        }
-
-        // Метод для добавления новой задачи
-        public void AddToDo(ToDo newToDo)
-        {
-            if (newToDo != null)
+            try
             {
-                TodoList.Add(newToDo); // Добавляем задачу в коллекцию
-                TodoAnzahl = TodoList.Count; // Обновляем количество задач
-                InformGUI(nameof(TodoList)); // Уведомляем интерфейс об изменении
+                // Загружаем все задачи
+                var tasks = await _repo.GetToDosByDateAsync(selectedDate);
+
+                // Очищаем текущий список
+                TodoList.Clear();
+
+                // Фильтруем задачи, если DueDate совпадает с выбранной датой
+                var filteredTasks = tasks.Where(task => task.DueDate.Date == selectedDate.Date).ToList();
+
+                // Добавляем отфильтрованные задачи в коллекцию
+                foreach (var task in filteredTasks)
+                {
+                    TodoList.Add(task);
+                }
+
+                // Обновляем количество задач
+                TodoAnzahl = TodoList.Count;
+                Console.WriteLine($"Загружено задач: {TodoAnzahl}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при загрузке задач: {ex.Message}");
             }
         }
 
-        // Метод для удаления задачи
+
+        // Method to add a new ToDo to the collection
+        public void AddToDo(ToDo newToDo)
+        {
+            // Avoid adding duplicate tasks based on ID
+            if (!TodoList.Any(t => t.ID == newToDo.ID))
+            {
+                TodoList.Add(newToDo);
+                TodoAnzahl = TodoList.Count; // Update task count
+                InformGUI(nameof(TodoAnzahl)); // Notify UI about the change
+            }
+        }
+
+        // Method to remove a ToDo from the collection
         public void RemoveToDo(ToDo toDo)
         {
             if (toDo != null)
             {
-                TodoList.Remove(toDo); // Удаляем задачу из коллекции
-                TodoAnzahl = TodoList.Count; // Обновляем количество задач
-                InformGUI(nameof(TodoAnzahl)); // Уведомляем интерфейс об изменении
+                TodoList.Remove(toDo); // Remove task from collection
+                TodoAnzahl = TodoList.Count; // Update task count
+                InformGUI(nameof(TodoAnzahl)); // Notify UI about the change
             }
         }
 
-
+        // Event to notify the UI about property changes
         public event PropertyChangedEventHandler PropertyChanged;
 
+        // Method to notify the UI about changes in properties
         private void InformGUI(string propName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
         }
+       
+
     }
 }

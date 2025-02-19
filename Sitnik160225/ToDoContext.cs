@@ -15,23 +15,9 @@ namespace Sitnik160225
 
 
         // Важно указать строку подключения в конструкторе или в файле конфигурации
-        public ToDoContext() : base("name=MyDbConnectionString") { }
+        public ToDoContext() : base("name=ToDoContext") { }
 
-        // Метод для проверки подключения и выполнения простого запроса
-        public void TestConnection()
-        {
-            try
-            {
-                // Попытка выполнения простого запроса на получение всех задач
-                var todos = this.ToDos.ToList();
-                Console.WriteLine("Подключение успешно установлено. Количество задач: " + todos.Count);
-            }
-            catch (Exception ex)
-            {
-                // В случае ошибки выводим сообщение об ошибке
-                Console.WriteLine("Ошибка при подключении к базе данных: " + ex.Message);
-            }
-        }
+        
     }
 }
 

@@ -66,6 +66,10 @@
                 <TextBlock Text="Priorität" FontSize="14" Margin="5"/>
                 <TextBox Text="{Binding SelectedToDo.Prioritaet}" FontSize="14" Margin="5"/>
                 <CheckBox Content="Aufgabe abgeschlossen" IsChecked="{Binding SelectedToDo.IstAbgeschlossen}" Margin="5"/>
+
+                <!-- Элемент для отображения фотографии -->
+                <Image Source="{Binding SelectedToDo.FotoPath}" Width="200" Height="150" Margin="5" HorizontalAlignment="Left"/>
+
                 <Button Content="Ändern" Width="100" Height="35" Margin="5" Click="ChangeTask_Click"/>
             </StackPanel>
         </Grid>
@@ -89,7 +93,7 @@
         <!-- Панель для выбора новой даты (скрыта по умолчанию) -->
         <StackPanel x:Name="DatePickerPanel" Grid.Row="1" Grid.Column="0" Visibility="Collapsed" Margin="10" Width="200" HorizontalAlignment="Left">
             <TextBlock Text="Выберите новую дату для задачи" FontSize="14" Margin="5"/>
-            <DatePicker x:Name="TaskDueDatePicker" Margin="5"/>
+            <DatePicker x:Name="TaskDueDatePicker" Margin="5" SelectedDateChanged="TaskDueDatePicker_SelectedDateChanged"/>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button x:Name="ConfirmCopyButton" Content="Подтвердить" Margin="5" Width="100" Click="ConfirmCopyButton_Click"/>
                 <Button x:Name="CancelCopyButton" Content="Отмена" Margin="5" Width="100" Click="CancelCopyButton_Click"/>

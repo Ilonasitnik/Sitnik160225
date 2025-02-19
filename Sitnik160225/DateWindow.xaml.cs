@@ -9,6 +9,7 @@ namespace Sitnik160225
     public partial class DateWindow : Window
     {
         private ToDoViewModel viewModel;
+        private ToDoRepo _todoRepo = new ToDoRepo();
         public DateTime SelectedDate { get; set; }
 
         public DateWindow(DateTime selectedDate)
@@ -18,8 +19,11 @@ namespace Sitnik160225
             viewModel.SelectedDate = selectedDate; // Устанавливаем выбранную дату
             DataContext = viewModel;
 
-
+            // Подписываемся на событие PropertyChanged для обновления UI
+            viewModel.PropertyChanged += ViewModel_PropertyChanged;
         }
+
+        
 
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
@@ -37,20 +41,30 @@ namespace Sitnik160225
 
             // Подписка на событие, чтобы обновить список задач в DateWindow после сохранения новой задачи
             newTaskWindow.TaskSaved += NewTaskWindow_TaskSaved;
+            
 
             newTaskWindow.ShowDialog(); // Отображение окна
         }
 
-        private void NewTaskWindow_TaskSaved(ToDo newTask)
+        private async void NewTaskWindow_TaskSaved(ToDo newTask)
         {
-            viewModel.AddToDo(newTask); // Добавляем задачу в список
+            // Добавление задачи в UI
+            viewModel.AddToDo(newTask);
+
+            // Добавление задачи в базу данных
+            await _todoRepo.AddToDoAsync(newTask);  // Добавляем задачу один раз здесь
+
             MessageBox.Show("Задача добавлена. Список задач обновлен!");
         }
 
-        private void ChangeTask_Click(object sender, RoutedEventArgs e)
+
+
+        private async void ChangeTask_Click(object sender, RoutedEventArgs e)
         {
             if (viewModel.SelectedToDo != null)
             {
+                // Изменения, сделанные в task
+                await _todoRepo.UpdateToDoAsync(viewModel.SelectedToDo);
                 MessageBox.Show("Задача была успешно изменена!");
             }
             else
@@ -59,20 +73,23 @@ namespace Sitnik160225
             }
         }
 
+
         private void CloseWindow_Click(object sender, RoutedEventArgs e)
         {
             this.Close(); // Закрытие текущего окна
         }
-
-        private void DeleteTask_Click(object sender, RoutedEventArgs e)
+        private async void DeleteTask_Click(object sender, RoutedEventArgs e)
         {
             var menuItem = sender as MenuItem;
             if (menuItem != null)
             {
-                var selectedTask = menuItem.CommandParameter as ToDo; // Получаем задачу через CommandParameter
+                var selectedTask = menuItem.CommandParameter as ToDo;
                 if (selectedTask != null && viewModel != null)
                 {
-                    viewModel.RemoveToDo(selectedTask); // Удаляем задачу через ViewModel
+                    // Удаляем задачу через ViewModel
+                    viewModel.RemoveToDo(selectedTask);
+                    // Удаляем задачу из базы данных
+                    await _todoRepo.DeleteToDoAsync(selectedTask.ID);
                     MessageBox.Show("Задача удалена!");
                 }
                 else
@@ -81,10 +98,6 @@ namespace Sitnik160225
                 }
             }
         }
-
-
-
-
 
 
 
@@ -128,9 +141,9 @@ namespace Sitnik160225
             }
         }
 
-        private void ConfirmCopyButton_Click(object sender, RoutedEventArgs e)
+        private async void ConfirmCopyButton_Click(object sender, RoutedEventArgs e)
         {
-            var taskToCopy = DataContext as ToDo;
+            var taskToCopy = DataContext as ToDo;  // Получаем задачу для копирования
             if (taskToCopy != null && TaskDueDatePicker.SelectedDate.HasValue)
             {
                 var newTask = new ToDo
@@ -142,8 +155,16 @@ namespace Sitnik160225
                     DueDate = TaskDueDatePicker.SelectedDate.Value // Используем выбранную дату
                 };
 
-                viewModel.AddToDo(newTask); // Добавляем новую задачу
+                // Добавляем задачу в модель
+                viewModel.AddToDo(newTask);
 
+                // Добавляем задачу в базу данных
+                await _todoRepo.AddToDoAsync(newTask);
+
+                // Загружаем задачи для выбранной даты (обновление списка)
+                await viewModel.LoadTasksForSelectedDateAsync(TaskDueDatePicker.SelectedDate.Value);
+
+                // Скрываем панель выбора даты после подтверждения
                 DatePickerPanel.Visibility = Visibility.Collapsed;
                 ConfirmCopyButton.Visibility = Visibility.Collapsed;
 
@@ -155,6 +176,8 @@ namespace Sitnik160225
             }
         }
 
+
+
         private void CancelCopyButton_Click(object sender, RoutedEventArgs e)
         {
             // Скрываем панель выбора даты и кнопку подтверждения
@@ -165,9 +188,17 @@ namespace Sitnik160225
             // Показываем список задач и другие элементы управления
             TaskDetailsPanel.Visibility = Visibility.Collapsed; // Скрыть панель с деталями задачи, если она была открыта
         }
+        private void TaskDueDatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // Обновляем дату в ViewModel при изменении выбранной даты
+            if (TaskDueDatePicker.SelectedDate.HasValue)
+            {
+                viewModel.SelectedDate = TaskDueDatePicker.SelectedDate.Value;
+            }
+        }
 
 
-     
+
 
     }
 }

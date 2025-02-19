@@ -70,6 +70,14 @@
     <Compile Include="Migrations\202502190338308_InitialMigration.Designer.cs">
       <DependentUpon>202502190338308_InitialMigration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202502191104162_UpdateToDoModel.cs" />
+    <Compile Include="Migrations\202502191104162_UpdateToDoModel.Designer.cs">
+      <DependentUpon>202502191104162_UpdateToDoModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202502191141538_UpdateToDoModel1.cs" />
+    <Compile Include="Migrations\202502191141538_UpdateToDoModel1.Designer.cs">
+      <DependentUpon>202502191141538_UpdateToDoModel1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="ToDo.cs" />
     <Compile Include="ToDoContext.cs" />
@@ -118,6 +126,12 @@
     </Compile>
     <EmbeddedResource Include="Migrations\202502190338308_InitialMigration.resx">
       <DependentUpon>202502190338308_InitialMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202502191104162_UpdateToDoModel.resx">
+      <DependentUpon>202502191104162_UpdateToDoModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202502191141538_UpdateToDoModel1.resx">
+      <DependentUpon>202502191141538_UpdateToDoModel1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

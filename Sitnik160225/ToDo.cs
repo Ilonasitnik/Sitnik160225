@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;  // Required for [Key]
-using System.Linq;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Sitnik160225
 {
@@ -17,7 +17,15 @@ namespace Sitnik160225
         private DateTime _dueDate;
 
 
-        // Marking ID as the primary key
+        // Поле для хранения даты (используем datetime2 в базе данных)
+        [Column(TypeName = "datetime2")]
+        public DateTime DueDate
+        {
+            get => _dueDate;
+            set { _dueDate = value; OnPropertyChanged(nameof(DueDate)); }
+        }
+
+        // Первичный ключ
         [Key]
         public int ID
         {
@@ -25,6 +33,8 @@ namespace Sitnik160225
             set { _id = value; OnPropertyChanged(nameof(ID)); }
         }
 
+        // Обязательное поле
+        [Required]
         public string Bezeichnung
         {
             get => _bezeichnung;
@@ -55,21 +65,21 @@ namespace Sitnik160225
             set { _fotoPath = value; OnPropertyChanged(nameof(FotoPath)); }
         }
 
-        public DateTime DueDate
-        {
-            get => _dueDate;
-            set { _dueDate = value; OnPropertyChanged(nameof(DueDate)); }
-        }
-
+        // Событие для уведомления об изменении свойств
         public event PropertyChangedEventHandler PropertyChanged;
 
-        // This method raises the PropertyChanged event
+        // Метод для вызова события PropertyChanged
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        // Конструктор по умолчанию
+        // Добавим в конструктор значения по умолчанию для DueDate, если оно не задано явно
+        public ToDo()
+        {
+            _dueDate = DateTime.Now;  // Устанавливаем текущую дату, если дата не была установлена
+        }
 
-        public ToDo() { }
     }
 }

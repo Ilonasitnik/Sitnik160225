@@ -8,6 +8,7 @@ namespace Sitnik160225
     public partial class NewTask : Window
 
     {
+        private ToDoRepo _todoRepo = new ToDoRepo();
         private ToDoViewModel viewModel; // Declare viewModel as a field of the class
         public event Action<ToDo> TaskSaved; // Событие для передачи новой задачи
         public ToDo NewTaskData { get; private set; } // Свойство для хранения новой задачи
@@ -97,12 +98,13 @@ namespace Sitnik160225
             // Заполнение данных задачи
             NewTaskData.Bezeichnung = TaskNameTextBox.Text;
             NewTaskData.Beschreibung = TaskDescriptionTextBox.Text;
-            NewTaskData.Prioritaet = (int)PrioritySlider.Value;
-          
 
+            // Убираем дублирование вызова AddToDoAsync
             TaskSaved?.Invoke(NewTaskData); // Передача новой задачи через событие
             this.Close(); // Закрытие окна
         }
+
+        
 
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
