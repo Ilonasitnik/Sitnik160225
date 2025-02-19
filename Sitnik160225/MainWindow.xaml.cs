@@ -23,17 +23,26 @@ namespace Sitnik160225
         public MainWindow()
         {
             InitializeComponent();
+            LoadTasksForCurrentDate();
+        }
+
+        private async void LoadTasksForCurrentDate()
+        {
+            var viewModel = new ToDoViewModel();
+            await viewModel.LoadTasksForSelectedDateAsync(DateTime.Now);
+            DataContext = viewModel;
         }
         private void Calendar_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            DateTime? selectedDate = Calendar.SelectedDate;
-
-            if (selectedDate.HasValue)
+            // Make sure Calendar is instantiated and selected
+            if (Calendar.SelectedDate.HasValue)
             {
-                DateWindow dateWindow = new DateWindow(selectedDate.Value);  // Передаем выбранную дату
+                DateTime selectedDate = Calendar.SelectedDate.Value;  // Access the selected date
+                DateWindow dateWindow = new DateWindow(selectedDate);  // Pass the selected date to another window
                 dateWindow.Show();
             }
         }
+
 
 
 

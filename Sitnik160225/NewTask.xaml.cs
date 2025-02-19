@@ -6,16 +6,19 @@ using System.Windows.Media.Imaging;
 namespace Sitnik160225
 {
     public partial class NewTask : Window
+
     {
+        private ToDoViewModel viewModel; // Declare viewModel as a field of the class
         public event Action<ToDo> TaskSaved; // Событие для передачи новой задачи
         public ToDo NewTaskData { get; private set; } // Свойство для хранения новой задачи
+        
 
         public NewTask()
         {
             InitializeComponent();
-            NewTaskData = new ToDo(); // Инициализация новой задачи
-            DataContext = NewTaskData;  // Установка DataContext
-
+            
+            NewTaskData = new ToDo { }; // Устанавливаем дату для новой задачи
+            DataContext = NewTaskData; // Установка DataContext
 
         }
 
@@ -95,11 +98,12 @@ namespace Sitnik160225
             NewTaskData.Bezeichnung = TaskNameTextBox.Text;
             NewTaskData.Beschreibung = TaskDescriptionTextBox.Text;
             NewTaskData.Prioritaet = (int)PrioritySlider.Value;
-
+          
 
             TaskSaved?.Invoke(NewTaskData); // Передача новой задачи через событие
             this.Close(); // Закрытие окна
         }
+
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {

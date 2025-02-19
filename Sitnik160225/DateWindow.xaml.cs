@@ -14,14 +14,11 @@ namespace Sitnik160225
         public DateWindow(DateTime selectedDate)
         {
             InitializeComponent();
-            SelectedDate = selectedDate;
-            TaskDueDatePicker.SelectedDate = selectedDate; // Устанавливаем дату в DatePicker
             viewModel = new ToDoViewModel();
-            viewModel.SelectedDate = selectedDate; // Устанавливаем дату в ViewModel
+            viewModel.SelectedDate = selectedDate; // Устанавливаем выбранную дату
+            DataContext = viewModel;
 
-            this.DataContext = viewModel; // Устанавливаем DataContext на viewModel
-            viewModel.PropertyChanged += ViewModel_PropertyChanged;
-           
+
         }
 
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -35,6 +32,7 @@ namespace Sitnik160225
 
         private void AddNewTask_Click(object sender, RoutedEventArgs e)
         {
+
             var newTaskWindow = new NewTask(); // Открытие окна для создания новой задачи
 
             // Подписка на событие, чтобы обновить список задач в DateWindow после сохранения новой задачи
@@ -167,5 +165,9 @@ namespace Sitnik160225
             // Показываем список задач и другие элементы управления
             TaskDetailsPanel.Visibility = Visibility.Collapsed; // Скрыть панель с деталями задачи, если она была открыта
         }
+
+
+     
+
     }
 }

@@ -1,16 +1,32 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Threading.Tasks;
 
 namespace Sitnik160225
 {
     internal class ToDoViewModel : INotifyPropertyChanged
     {
         public ObservableCollection<ToDo> TodoList { get; set; }
-
+        private ToDoRepo _repo;
         private ToDo _selectedToDo;
         private int _todoAnzahl;
         private DateTime _selectedDate;
+
+
+
+        // Загружаем задачи для выбранной даты
+       
+        public async Task LoadTasksForSelectedDateAsync(DateTime selectedDate)
+        {
+            var tasks = await _repo.GetToDosByDateAsync(selectedDate);
+            TodoList.Clear();
+            foreach (var task in tasks)
+            {
+                TodoList.Add(task);
+            }
+        }
+
 
         public ToDo SelectedToDo
         {
@@ -55,6 +71,7 @@ namespace Sitnik160225
         {
             TodoList = new ObservableCollection<ToDo>();
             SelectedDate = DateTime.Now; // Устанавливаем текущую дату по умолчанию
+            _repo = new ToDoRepo();
         }
 
         // Метод для добавления новой задачи
