@@ -27,11 +27,32 @@ namespace Sitnik160225
             return await _dbContext.ToDos.ToListAsync();
         }
 
-        // READ: Получить задачи по дате
+
+        // READ: Получить задачи по дате с обработкой ошибок
         public async Task<List<ToDo>> GetToDosByDateAsync(DateTime date)
         {
-            return await _dbContext.ToDos.Where(t => t.DueDate.Date == date.Date).ToListAsync();
+            try
+            {
+                if (date == null)
+                {
+                    throw new ArgumentNullException(nameof(date), "Дата не может быть null");
+                }
+
+                Console.WriteLine($"Ищем задачи на дату: {date.Date}");
+
+                var todos = await _dbContext.ToDos.Where(t => t.DueDate.Date == date.Date).ToListAsync();
+                Console.WriteLine($"Найдено задач: {todos.Count}");
+
+                return todos;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Произошла ошибка: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                throw;
+            }
         }
+
 
         // UPDATE: Обновить задачу
         public async Task UpdateToDoAsync(ToDo updatedToDo)
@@ -49,6 +70,7 @@ namespace Sitnik160225
         }
 
 
+
         // DELETE: Удалить задачу по ID
         public async Task DeleteToDoAsync(int id)
         {
@@ -59,6 +81,8 @@ namespace Sitnik160225
                 await _dbContext.SaveChangesAsync();
             }
         }
+
+
 
     }
 }
