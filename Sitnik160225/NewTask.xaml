@@ -47,23 +47,20 @@
             </TextBox.Style>
         </TextBox>
 
-        <!-- Поле для ввода приоритета задачи (ComboBox) -->
         <ComboBox Name="TaskPriorityComboBox" Width="350" Height="30" Margin="0,0,0,10" 
-                  HorizontalAlignment="Center" 
-                  SelectedValue="{Binding Prioritaet, Mode=TwoWay}" 
-                  ToolTip="Select task priority">
+          HorizontalAlignment="Center" 
+          SelectedValue="{Binding Prioritaet, Mode=TwoWay}" 
+          ToolTip="Select task priority">
             <ComboBox.Items>
                 <ComboBoxItem Content="Low" Tag="1" />
                 <ComboBoxItem Content="Medium" Tag="2" />
                 <ComboBoxItem Content="High" Tag="3" />
             </ComboBox.Items>
             <ComboBox.SelectedValuePath>Tag</ComboBox.SelectedValuePath>
-            <!-- Указываем путь к значению -->
         </ComboBox>
 
-        <!-- Бегунок для отображения приоритета -->
         <Slider Name="PrioritySlider" Width="350" Height="30" Margin="0,10" Minimum="1" Maximum="3" 
-                Value="{Binding Prioritaet, Mode=TwoWay}" TickFrequency="1" IsSnapToTickEnabled="True">
+        Value="{Binding Prioritaet, Mode=TwoWay}" TickFrequency="1" IsSnapToTickEnabled="True">
             <Slider.Resources>
                 <Style TargetType="Slider">
                     <Style.Triggers>
@@ -80,7 +77,6 @@
                 </Style>
             </Slider.Resources>
         </Slider>
-
         <!-- Кнопка для добавления фотографии -->
         <Button Name="AddPhotoButton" Content="Add Photo" Width="350" Height="40" 
                 HorizontalAlignment="Center" Margin="0,10" Click="AddPhotoButton_Click" />

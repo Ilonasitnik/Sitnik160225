@@ -16,6 +16,7 @@ namespace Sitnik160225
         private string _fotoPath;
         private DateTime _dueDate;
 
+
         // Marking ID as the primary key
         [Key]
         public int ID
@@ -68,7 +69,6 @@ namespace Sitnik160225
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        
 
         public ToDo() { }
     }

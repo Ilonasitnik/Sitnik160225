@@ -14,6 +14,9 @@ namespace Sitnik160225
         {
             InitializeComponent();
             NewTaskData = new ToDo(); // Инициализация новой задачи
+            DataContext = NewTaskData;  // Установка DataContext
+
+
         }
 
         private void AddPhotoButton_Click(object sender, RoutedEventArgs e)
