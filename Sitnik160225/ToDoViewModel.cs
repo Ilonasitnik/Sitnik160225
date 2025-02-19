@@ -23,6 +23,7 @@ namespace Sitnik160225
         // Currently selected date
         private DateTime _selectedDate;
 
+
         // Constructor to initialize the ViewModel
         public ToDoViewModel()
         {
@@ -78,17 +79,14 @@ namespace Sitnik160225
         {
             try
             {
-                // Загружаем все задачи
+                // Загружаем задачи из репозитория
                 var tasks = await _repo.GetToDosByDateAsync(selectedDate);
 
                 // Очищаем текущий список
                 TodoList.Clear();
 
-                // Фильтруем задачи, если DueDate совпадает с выбранной датой
-                var filteredTasks = tasks.Where(task => task.DueDate.Date == selectedDate.Date).ToList();
-
-                // Добавляем отфильтрованные задачи в коллекцию
-                foreach (var task in filteredTasks)
+                // Добавляем задачи в коллекцию
+                foreach (var task in tasks)
                 {
                     TodoList.Add(task);
                 }
