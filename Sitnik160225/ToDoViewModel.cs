@@ -79,6 +79,7 @@ namespace Sitnik160225
             }
         }
 
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void InformGUI(string propName)

@@ -71,7 +71,7 @@ namespace Sitnik160225
             var menuItem = sender as MenuItem;
             if (menuItem != null)
             {
-                var selectedTask = menuItem.CommandParameter as ToDo; // Получаем задачу из CommandParameter
+                var selectedTask = menuItem.CommandParameter as ToDo; // Получаем задачу через CommandParameter
                 if (selectedTask != null && viewModel != null)
                 {
                     viewModel.RemoveToDo(selectedTask); // Удаляем задачу через ViewModel
@@ -79,10 +79,14 @@ namespace Sitnik160225
                 }
                 else
                 {
-                    MessageBox.Show("Ошибка: Не удалось получить задачу или ViewModel не инициализирован.");
+                    MessageBox.Show("Ошибка: Не удалось получить задачу.");
                 }
             }
         }
+
+
+
+
 
 
 

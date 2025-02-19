@@ -51,8 +51,8 @@
                     </ListBox.ItemTemplate>
                     <ListBox.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Удалить" Click="DeleteTask_Click"/>
-                            <MenuItem Header="Копировать" Click="CopyTask_Click"/>
+                            <MenuItem Header="Удалить" Click="DeleteTask_Click" CommandParameter="{Binding SelectedToDo}" />
+                            <MenuItem Header="Копировать" Click="CopyTask_Click" />
                         </ContextMenu>
                     </ListBox.ContextMenu>
                 </ListBox>
@@ -95,5 +95,8 @@
                 <Button x:Name="CancelCopyButton" Content="Отмена" Margin="5" Width="100" Click="CancelCopyButton_Click"/>
             </StackPanel>
         </StackPanel>
+
+        <!-- Добавление TextBlock для отображения количества задач (слева внизу) -->
+        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10" FontSize="16" Grid.Row="2" Text="{Binding TodoAnzahl, StringFormat='Aufgaben: {0}'}" />
     </Grid>
 </Window>
