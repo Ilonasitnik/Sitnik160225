@@ -66,8 +66,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="BaseViewModel.cs" />
-    <Compile Include="DbContext.cs" />
-    <Compile Include="DbSet.cs" />
     <Compile Include="ToDo.cs" />
     <Compile Include="ToDoContext.cs" />
     <Compile Include="ToDoRepo.cs" />

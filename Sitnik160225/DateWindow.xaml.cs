@@ -6,9 +6,6 @@ using System.Windows.Input;
 
 namespace Sitnik160225
 {
-    /// <summary>
-    /// Interaction logic for DateWindow.xaml
-    /// </summary>
     public partial class DateWindow : Window
     {
         private ToDoViewModel viewModel;
@@ -18,11 +15,13 @@ namespace Sitnik160225
         {
             InitializeComponent();
             SelectedDate = selectedDate;
-            viewModel = new ToDoViewModel();  // Создаем экземпляр ViewModel
-            this.DataContext = viewModel;
+            TaskDueDatePicker.SelectedDate = selectedDate; // Устанавливаем дату в DatePicker
+            viewModel = new ToDoViewModel();
+            viewModel.SelectedDate = selectedDate; // Устанавливаем дату в ViewModel
 
-            // Подписка на изменение выбранной задачи
+            this.DataContext = viewModel; // Устанавливаем DataContext на viewModel
             viewModel.PropertyChanged += ViewModel_PropertyChanged;
+           
         }
 
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -44,13 +43,16 @@ namespace Sitnik160225
             newTaskWindow.ShowDialog(); // Отображение окна
         }
 
+        private void NewTaskWindow_TaskSaved(ToDo newTask)
+        {
+            viewModel.AddToDo(newTask); // Добавляем задачу в список
+            MessageBox.Show("Задача добавлена. Список задач обновлен!");
+        }
+
         private void ChangeTask_Click(object sender, RoutedEventArgs e)
         {
-            // Проверка на наличие выбранной задачи
             if (viewModel.SelectedToDo != null)
             {
-                // Логика изменения задачи
-                // Здесь можно добавить код для обновления задачи в базе данных или списке
                 MessageBox.Show("Задача была успешно изменена!");
             }
             else
@@ -59,16 +61,6 @@ namespace Sitnik160225
             }
         }
 
-        private void NewTaskWindow_TaskSaved()
-        {
-            // Обновление списка задач после добавления новой задачи
-            var viewModel = (ToDoViewModel)this.DataContext;
-
-            // Уведомление о добавлении задачи
-            MessageBox.Show("Задача добавлена. Список задач обновлен!");
-        }
-
-        // Обработчик для кнопки "Закрыть"
         private void CloseWindow_Click(object sender, RoutedEventArgs e)
         {
             this.Close(); // Закрытие текущего окна
@@ -76,11 +68,26 @@ namespace Sitnik160225
 
         private void DeleteTask_Click(object sender, RoutedEventArgs e)
         {
-            var taskToDelete = (ToDo)((MenuItem)sender).DataContext;
-            viewModel.RemoveToDo(taskToDelete);  // Удаляем задачу через ViewModel
+            var menuItem = sender as MenuItem;
+            if (menuItem != null)
+            {
+                var selectedTask = menuItem.CommandParameter as ToDo; // Получаем задачу из CommandParameter
+                if (selectedTask != null && viewModel != null)
+                {
+                    viewModel.RemoveToDo(selectedTask); // Удаляем задачу через ViewModel
+                    MessageBox.Show("Задача удалена!");
+                }
+                else
+                {
+                    MessageBox.Show("Ошибка: Не удалось получить задачу или ViewModel не инициализирован.");
+                }
+            }
         }
 
-        // Обработчик для двойного щелчка по элементу в ListBox
+
+
+
+
         private void ListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             var listBox = sender as ListBox;
@@ -95,38 +102,46 @@ namespace Sitnik160225
             }
         }
 
-        // Обработчик для копирования задачи
         private void CopyTask_Click(object sender, RoutedEventArgs e)
         {
-            var taskToCopy = (ToDo)((MenuItem)sender).DataContext;
+            var menuItem = sender as MenuItem;
+            if (menuItem != null)
+            {
+                var viewModel = menuItem.DataContext as ToDoViewModel; // Приводим DataContext к типу ToDoViewModel
+                if (viewModel != null && viewModel.SelectedToDo != null)
+                {
+                    var taskToCopy = viewModel.SelectedToDo; // Получаем выбранную задачу
 
-            // Показываем элементы для выбора новой даты и кнопку подтверждения
-            DatePickerPanel.Visibility = Visibility.Visible;
-            ConfirmCopyButton.Visibility = Visibility.Visible;
+                    // Показываем элементы для выбора новой даты и кнопку подтверждения
+                    DatePickerPanel.Visibility = Visibility.Visible;
+                    ConfirmCopyButton.Visibility = Visibility.Visible;
 
-            // Сохраняем задачу для копирования
-            DataContext = taskToCopy; // Сохраняем текущую задачу, чтобы позже создать её копию
+                    // Сохраняем задачу для копирования
+                    DataContext = taskToCopy; // Сохраняем текущую задачу, чтобы позже создать её копию
+                }
+                else
+                {
+                    MessageBox.Show("Ошибка: Не удалось получить задачу для копирования.");
+                }
+            }
         }
 
-        // Обработчик для кнопки "Подтвердить" при копировании задачи
         private void ConfirmCopyButton_Click(object sender, RoutedEventArgs e)
         {
             var taskToCopy = DataContext as ToDo;
             if (taskToCopy != null && TaskDueDatePicker.SelectedDate.HasValue)
             {
-                // Логика копирования задачи на новую дату
                 var newTask = new ToDo
                 {
                     Bezeichnung = taskToCopy.Bezeichnung,
                     Beschreibung = taskToCopy.Beschreibung,
                     Prioritaet = taskToCopy.Prioritaet,
                     IstAbgeschlossen = taskToCopy.IstAbgeschlossen,
-                    DueDate = TaskDueDatePicker.SelectedDate.Value
+                    DueDate = TaskDueDatePicker.SelectedDate.Value // Используем выбранную дату
                 };
 
-                viewModel.AddToDo(newTask); // Добавляем новую задачу в ViewModel
+                viewModel.AddToDo(newTask); // Добавляем новую задачу
 
-                // Скрываем панель выбора даты и кнопку подтверждения
                 DatePickerPanel.Visibility = Visibility.Collapsed;
                 ConfirmCopyButton.Visibility = Visibility.Collapsed;
 
@@ -138,7 +153,6 @@ namespace Sitnik160225
             }
         }
 
-        // Обработчик для кнопки "Отмена" при копировании задачи
         private void CancelCopyButton_Click(object sender, RoutedEventArgs e)
         {
             // Скрываем панель выбора даты и кнопку подтверждения
@@ -149,6 +163,5 @@ namespace Sitnik160225
             // Показываем список задач и другие элементы управления
             TaskDetailsPanel.Visibility = Visibility.Collapsed; // Скрыть панель с деталями задачи, если она была открыта
         }
-
     }
 }

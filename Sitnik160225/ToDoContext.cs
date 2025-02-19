@@ -5,10 +5,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-
 namespace Sitnik160225
 {
-    public class ToDoContext : DbContext
+    internal class ToDoContext : DbContext
     {
 
         public System.Data.Entity.DbSet<ToDo> ToDos { get; set; }

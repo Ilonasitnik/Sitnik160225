@@ -1,6 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Collections.Generic;
 
 namespace Sitnik160225
 {
@@ -14,12 +13,11 @@ namespace Sitnik160225
         }
 
         // CREATE: Добавить новую задачу
-       public void AddToDo(ToDo newToDo)
-{
-    _dbContext.ToDos.Add(newToDo);  // Добавляем задачу в DbSet
-    _dbContext.SaveChanges();  // Сохраняем изменения в базе данных
-}
-
+        public void AddToDo(ToDo newToDo)
+        {
+            _dbContext.ToDos.Add(newToDo);
+            _dbContext.SaveChanges();
+        }
 
         // READ: Получить все задачи
         public List<ToDo> GetAllToDos()
@@ -37,7 +35,6 @@ namespace Sitnik160225
                 existingToDo.Beschreibung = updatedToDo.Beschreibung;
                 existingToDo.Prioritaet = updatedToDo.Prioritaet;
                 existingToDo.IstAbgeschlossen = updatedToDo.IstAbgeschlossen;
-                existingToDo.FotoPath = updatedToDo.FotoPath;
                 existingToDo.DueDate = updatedToDo.DueDate;
                 _dbContext.SaveChanges();
             }

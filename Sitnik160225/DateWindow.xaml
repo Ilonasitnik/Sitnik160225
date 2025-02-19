@@ -16,8 +16,8 @@
         </Grid.RowDefinitions>
 
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Background="#2E3B4E" Height="50" Grid.Row="0">
-            <TextBlock Text="{Binding SelectedDate, StringFormat=' {0:dd.MM.yyyy}'}"
-                      FontSize="16" FontWeight="Bold" Margin="10" Foreground="White" />
+            <TextBlock Text="{Binding SelectedDate, StringFormat='{}{0:dd.MM.yyyy}'}"
+                       FontSize="16" FontWeight="Bold" Margin="10" Foreground="White" />
         </StackPanel>
 
         <!-- Контейнер для списка задач и панели с деталями -->
@@ -56,7 +56,6 @@
                         </ContextMenu>
                     </ListBox.ContextMenu>
                 </ListBox>
-
             </Border>
 
             <!-- Панель с деталями задачи -->
@@ -96,7 +95,5 @@
                 <Button x:Name="CancelCopyButton" Content="Отмена" Margin="5" Width="100" Click="CancelCopyButton_Click"/>
             </StackPanel>
         </StackPanel>
-
-
     </Grid>
 </Window>
