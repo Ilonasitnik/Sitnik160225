@@ -6,120 +6,137 @@ using System.Windows.Media.Imaging;
 namespace Sitnik160225
 {
     public partial class NewTask : Window
-
     {
+        // Repository für Aufgaben
         private ToDoRepo _todoRepo = new ToDoRepo();
-        private ToDoViewModel viewModel; // Declare viewModel as a field of the class
-        public event Action<ToDo> TaskSaved; // Событие для передачи новой задачи
-        public ToDo NewTaskData { get; private set; } // Свойство для хранения новой задачи
-        
+        private ToDoViewModel viewModel; // Feld für das ViewModel
+        public event Action<ToDo> TaskSaved; // Ereignis zum Übertragen einer neuen Aufgabe
+        public ToDo NewTaskData { get; private set; } // Eigenschaft zur Speicherung der neuen Aufgabe
+
+        #region Konstruktor und DataContext Initialisierung
 
         public NewTask()
         {
             InitializeComponent();
-            
-            NewTaskData = new ToDo { }; // Устанавливаем дату для новой задачи
-            DataContext = NewTaskData; // Установка DataContext
+
+            NewTaskData = new ToDo { }; // Initialisierung der neuen Aufgabe
+            DataContext = NewTaskData; // Setzen des DataContext für die Bindung
 
         }
 
+        #endregion
+
+        #region Ereignis-Handler für den Fokuswechsel in den Textfeldern (TaskName, TaskDescription, TaskPriority)
+
+        // Ereignis-Handler für das Erhalten des Fokus im Textfeld für den Aufgabennamen
+        private void TaskNameTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            if (textBox.Text == "Enter task name") // Wenn der Text der Standardwert ist
+            {
+                textBox.Text = ""; // Leere das Feld
+            }
+        }
+
+        // Ereignis-Handler für das Verlassen des Fokus im Textfeld für den Aufgabennamen
+        private void TaskNameTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            if (string.IsNullOrWhiteSpace(textBox.Text)) // Wenn das Feld leer ist
+            {
+                textBox.Text = "Enter task name"; // Setze den Standardtext zurück
+            }
+        }
+
+        // Ereignis-Handler für das Erhalten des Fokus im Textfeld für die Aufgabebeschreibung
+        private void TaskDescriptionTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            if (textBox.Text == "Enter task description") // Wenn der Text der Standardwert ist
+            {
+                textBox.Text = ""; // Leere das Feld
+            }
+        }
+
+        // Ereignis-Handler für das Verlassen des Fokus im Textfeld für die Aufgabebeschreibung
+        private void TaskDescriptionTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            if (string.IsNullOrWhiteSpace(textBox.Text)) // Wenn das Feld leer ist
+            {
+                textBox.Text = "Enter task description"; // Setze den Standardtext zurück
+            }
+        }
+
+        // Ereignis-Handler für das Erhalten des Fokus im Textfeld für die Aufgabenpriorität
+        private void TaskPriorityTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            if (textBox.Text == "Enter task priority") // Wenn der Text der Standardwert ist
+            {
+                textBox.Text = ""; // Leere das Feld
+            }
+        }
+
+        // Ereignis-Handler für das Verlassen des Fokus im Textfeld für die Aufgabenpriorität
+        private void TaskPriorityTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            if (string.IsNullOrWhiteSpace(textBox.Text)) // Wenn das Feld leer ist
+            {
+                textBox.Text = "Enter task priority"; // Setze den Standardtext zurück
+            }
+        }
+
+        #endregion
+
+        #region Ereignis-Handler für Schaltflächen (Foto hinzufügen, Speichern, Abbrechen)
+
+        // Ereignis-Handler für den Klick auf die "Foto hinzufügen"-Schaltfläche
         private void AddPhotoButton_Click(object sender, RoutedEventArgs e)
         {
             var openFileDialog = new Microsoft.Win32.OpenFileDialog();
-            openFileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.gif"; // Фильтрация только изображений
+            openFileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.gif"; // Filter für Bilddateien
 
             if (openFileDialog.ShowDialog() == true)
             {
                 string photoPath = openFileDialog.FileName;
-                MessageBox.Show($"Фото выбрано: {photoPath}");
+                MessageBox.Show($"Foto ausgewählt: {photoPath}");
 
-                // Отображаем выбранную фотографию в элементе Image
-                var bitmap = new BitmapImage(new Uri(photoPath)); // Загружаем изображение
-                TaskImage.Source = bitmap; // Устанавливаем источник изображения
+                // Lade und zeige das ausgewählte Foto im Image-Element an
+                var bitmap = new BitmapImage(new Uri(photoPath));
+                TaskImage.Source = bitmap; // Setze das Bild als Quelle
             }
         }
 
-        private void TaskNameTextBox_GotFocus(object sender, RoutedEventArgs e)
-        {
-            var textBox = sender as TextBox;
-            if (textBox.Text == "Enter task name")
-            {
-                textBox.Text = "";
-            }
-        }
-
-        private void TaskNameTextBox_LostFocus(object sender, RoutedEventArgs e)
-        {
-            var textBox = sender as TextBox;
-            if (string.IsNullOrWhiteSpace(textBox.Text))
-            {
-                textBox.Text = "Enter task name";
-            }
-        }
-
-        private void TaskDescriptionTextBox_GotFocus(object sender, RoutedEventArgs e)
-        {
-            var textBox = sender as TextBox;
-            if (textBox.Text == "Enter task description")
-            {
-                textBox.Text = "";
-            }
-        }
-
-        private void TaskDescriptionTextBox_LostFocus(object sender, RoutedEventArgs e)
-        {
-            var textBox = sender as TextBox;
-            if (string.IsNullOrWhiteSpace(textBox.Text))
-            {
-                textBox.Text = "Enter task description";
-            }
-        }
-
-        private void TaskPriorityTextBox_GotFocus(object sender, RoutedEventArgs e)
-        {
-            var textBox = sender as TextBox;
-            if (textBox.Text == "Enter task priority")
-            {
-                textBox.Text = "";
-            }
-        }
-
-        private void TaskPriorityTextBox_LostFocus(object sender, RoutedEventArgs e)
-        {
-            var textBox = sender as TextBox;
-            if (string.IsNullOrWhiteSpace(textBox.Text))
-            {
-                textBox.Text = "Enter task priority";
-            }
-        }
-
+        // Ereignis-Handler für den Klick auf die "Speichern"-Schaltfläche
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            // Заполнение данных задачи
+            // Fülle die Daten der neuen Aufgabe
             NewTaskData.Bezeichnung = TaskNameTextBox.Text;
             NewTaskData.Beschreibung = TaskDescriptionTextBox.Text;
 
-            // Убираем дублирование вызова AddToDoAsync
-            TaskSaved?.Invoke(NewTaskData); // Передача новой задачи через событие
-            this.Close(); // Закрытие окна
+            // Ereignis aufrufen, um die neue Aufgabe zu übergeben
+            TaskSaved?.Invoke(NewTaskData);
+            this.Close(); // Schließe das Fenster
         }
 
-        
-
-
+        // Ereignis-Handler für den Klick auf die "Abbrechen"-Schaltfläche
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            // Восстановление значений по умолчанию
+            // Setze die Standardwerte zurück
             NewTaskData.Bezeichnung = string.Empty;
             NewTaskData.Beschreibung = string.Empty;
             NewTaskData.Prioritaet = 0;
             NewTaskData.IstAbgeschlossen = false;
 
-            // Очищаем изображение, если оно было добавлено
+            // Lösche das Bild, falls eines hinzugefügt wurde
             TaskImage.Source = null;
 
-            // Закрываем окно
+            // Schließe das Fenster
             this.Close();
         }
+
+        #endregion
     }
 }

@@ -13,8 +13,6 @@ namespace Sitnik160225
 
         public System.Data.Entity.DbSet<ToDo> ToDos { get; set; }
 
-
-        // Важно указать строку подключения в конструкторе или в файле конфигурации
         public ToDoContext() : base("name=ToDoContext") { }
 
         

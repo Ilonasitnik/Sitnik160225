@@ -8,6 +8,7 @@ namespace Sitnik160225
     [Serializable]
     public class ToDo : INotifyPropertyChanged
     {
+        #region Fields
         private int _id;
         private string _bezeichnung;
         private string _beschreibung;
@@ -15,9 +16,10 @@ namespace Sitnik160225
         private bool _istAbgeschlossen;
         private string _fotoPath;
         private DateTime _dueDate;
+        #endregion
 
-
-        // Поле для хранения даты (используем datetime2 в базе данных)
+        #region Properties
+        // Eigenschaft für das Datum (Verwendung von datetime2 in der Datenbank)
         [Column(TypeName = "datetime2")]
         public DateTime DueDate
         {
@@ -25,7 +27,7 @@ namespace Sitnik160225
             set { _dueDate = value; OnPropertyChanged(nameof(DueDate)); }
         }
 
-        // Первичный ключ
+        // Primärschlüssel
         [Key]
         public int ID
         {
@@ -33,7 +35,7 @@ namespace Sitnik160225
             set { _id = value; OnPropertyChanged(nameof(ID)); }
         }
 
-        // Обязательное поле
+        // Pflichtfeld (Aufgabenbezeichnung)
         [Required]
         public string Bezeichnung
         {
@@ -64,22 +66,25 @@ namespace Sitnik160225
             get => _fotoPath;
             set { _fotoPath = value; OnPropertyChanged(nameof(FotoPath)); }
         }
+        #endregion
 
-        // Событие для уведомления об изменении свойств
+        #region Events and Methods
+        // Ereignis zur Benachrichtigung über Änderungen der Eigenschaften
         public event PropertyChangedEventHandler PropertyChanged;
 
-        // Метод для вызова события PropertyChanged
+        // Methode zur Auslösung des PropertyChanged-Ereignisses
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+        #endregion
 
-        // Конструктор по умолчанию
-        // Добавим в конструктор значения по умолчанию для DueDate, если оно не задано явно
+        #region Constructors
+        // Standardkonstruktor
         public ToDo()
         {
-            _dueDate = DateTime.Now;  // Устанавливаем текущую дату, если дата не была установлена
+            _dueDate = DateTime.Now;  // Setze das aktuelle Datum als Standardwert
         }
-
+        #endregion
     }
 }

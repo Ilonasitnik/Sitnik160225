@@ -11,7 +11,7 @@ namespace Sitnik160225
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        // Общий метод для уведомления об изменениях
+        
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

@@ -1,22 +1,32 @@
 ﻿<Window x:Class="Sitnik160225.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="ToDo App" Height="450" Width="800" Loaded="MainWindow_Loaded">
+        Title="ToDo App" Height="600" Width="900" Loaded="MainWindow_Loaded">
     <Grid>
+        <!-- Kalender zur Auswahl von Daten -->
         <Calendar x:Name="Calendar" SelectedDatesChanged="Calendar_SelectedDatesChanged" MouseDoubleClick="Calendar_MouseDoubleClick" />
+
+        <!-- Tabelle zur Anzeige der ToDo-Liste -->
         <DataGrid ItemsSource="{Binding TodoList}" AutoGenerateColumns="False" 
                   Margin="10,10,10,10" Height="200" Width="600" VerticalAlignment="Bottom">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Название" Binding="{Binding Bezeichnung}" />
-                <DataGridTextColumn Header="Описание" Binding="{Binding Beschreibung}" />
-                <DataGridTextColumn Header="Приоритет" Binding="{Binding Prioritaet}" />
-                <DataGridCheckBoxColumn Header="Завершено" Binding="{Binding IstAbgeschlossen}" />
-                <DataGridTextColumn Header="Дата" Binding="{Binding DueDate, StringFormat={}{0:dd.MM.yyyy}}" />
+  
+                <DataGridTextColumn Header="Titel" Binding="{Binding Bezeichnung}" />
+
+                <DataGridTextColumn Header="Beschreibung" Binding="{Binding Beschreibung}" />
+
+                <DataGridTextColumn Header="Priorität" Binding="{Binding Prioritaet}" />
+
+                <DataGridCheckBoxColumn Header="Abgeschlossen" Binding="{Binding IstAbgeschlossen}" />
+
+                <DataGridTextColumn Header="Datum" Binding="{Binding DueDate, StringFormat={}{0:dd.MM.yyyy}}" />
             </DataGrid.Columns>
+
+            <!-- Zeilenhöhe festlegen -->
             <DataGrid.RowHeight>25</DataGrid.RowHeight>
-            <!-- Set row height -->
+
+            <!-- Spaltenbreite festlegen -->
             <DataGrid.ColumnWidth>120</DataGrid.ColumnWidth>
-            <!-- Set column width -->
         </DataGrid>
     </Grid>
 </Window>

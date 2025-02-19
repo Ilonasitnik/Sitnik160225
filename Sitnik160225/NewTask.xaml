@@ -1,21 +1,25 @@
-﻿<Window x:Class="Sitnik160225.NewTask"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Sitnik160225"
-        mc:Ignorable="d"
+﻿<Window x:Class="Sitnik160225.NewTask" 
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:local="clr-namespace:Sitnik160225" 
+        mc:Ignorable="d" 
         Title="NewTask" Height="750" Width="600">
+
+    <!-- Hauptcontainer für das Layout -->
     <StackPanel Margin="20" VerticalAlignment="Top">
-        <!-- Заголовок окна -->
+
+        <!-- Titel des Fensters -->
         <TextBlock Text="Create New Task" FontSize="20" HorizontalAlignment="Center" Margin="0,0,0,20" />
 
-        <!-- Поле для ввода названия задачи -->
+        <!-- Eingabefeld für den Titel der Aufgabe -->
         <TextBox Name="TaskNameTextBox" Width="350" Height="30" Margin="0,0,0,10" 
                  HorizontalAlignment="Center" 
                  Text="{Binding NewToDo.Bezeichnung, UpdateSourceTrigger=PropertyChanged}" 
                  ToolTip="Enter task name"
                  GotFocus="TaskNameTextBox_GotFocus" LostFocus="TaskNameTextBox_LostFocus">
+            <!-- Placeholder-Text für die Aufgabe -->
             <TextBox.Style>
                 <Style TargetType="TextBox">
                     <Setter Property="Text" Value="Enter task name" />
@@ -31,7 +35,7 @@
             </TextBox.Style>
         </TextBox>
 
-        <!-- Поле для ввода описания задачи -->
+        <!-- Eingabefeld für die Beschreibung der Aufgabe -->
         <TextBox Name="TaskDescriptionTextBox" Width="350" Height="100" Margin="0,0,0,10" 
                  HorizontalAlignment="Center" Text="{Binding NewToDo.Beschreibung}" 
                  ToolTip="Enter task description" GotFocus="TaskDescriptionTextBox_GotFocus" LostFocus="TaskDescriptionTextBox_LostFocus">
@@ -47,10 +51,11 @@
             </TextBox.Style>
         </TextBox>
 
+        <!-- Dropdown-Menü zur Auswahl der Priorität -->
         <ComboBox Name="TaskPriorityComboBox" Width="350" Height="30" Margin="0,0,0,10" 
-          HorizontalAlignment="Center" 
-          SelectedValue="{Binding Prioritaet, Mode=TwoWay}" 
-          ToolTip="Select task priority">
+                  HorizontalAlignment="Center" 
+                  SelectedValue="{Binding Prioritaet, Mode=TwoWay}" 
+                  ToolTip="Select task priority">
             <ComboBox.Items>
                 <ComboBoxItem Content="Low" Tag="1" />
                 <ComboBoxItem Content="Medium" Tag="2" />
@@ -59,8 +64,9 @@
             <ComboBox.SelectedValuePath>Tag</ComboBox.SelectedValuePath>
         </ComboBox>
 
+        <!-- Schieberegler für Priorität mit Farbänderung -->
         <Slider Name="PrioritySlider" Width="350" Height="30" Margin="0,10" Minimum="1" Maximum="3" 
-        Value="{Binding Prioritaet, Mode=TwoWay}" TickFrequency="1" IsSnapToTickEnabled="True">
+                Value="{Binding Prioritaet, Mode=TwoWay}" TickFrequency="1" IsSnapToTickEnabled="True">
             <Slider.Resources>
                 <Style TargetType="Slider">
                     <Style.Triggers>
@@ -77,21 +83,22 @@
                 </Style>
             </Slider.Resources>
         </Slider>
-        <!-- Кнопка для добавления фотографии -->
+
+        <!-- Button zum Hinzufügen eines Fotos -->
         <Button Name="AddPhotoButton" Content="Add Photo" Width="350" Height="40" 
                 HorizontalAlignment="Center" Margin="0,10" Click="AddPhotoButton_Click" />
 
-        <!-- Контейнер для отображения изображения -->
+        <!-- Container zur Anzeige des Fotos -->
         <Image Name="TaskImage" Width="350" Height="200" HorizontalAlignment="Center" Margin="0,10" />
 
-        <!-- Кнопки "Сохранить" и "Отменить" рядом -->
+        <!-- Buttons zum Speichern und Abbrechen -->
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20">
-            <!-- Кнопка "Сохранить" -->
+            <!-- Button zum Speichern der Aufgabe -->
             <Button Name="SaveButton" Content="Save Task" Width="150" Height="40" 
                     HorizontalAlignment="Center" Margin="10,0" Background="Green" Foreground="White" 
                     Click="SaveButton_Click" />
 
-            <!-- Кнопка "Отменить" -->
+            <!-- Button zum Abbrechen -->
             <Button Name="CancelButton" Content="Cancel" Width="150" Height="40" 
                     HorizontalAlignment="Center" Margin="10,0" Background="Red" Foreground="White" 
                     Click="CancelButton_Click" />

@@ -8,7 +8,7 @@
         Title="DateWindow" Height="750" Width="600">
 
     <Grid>
-        <!-- Верхняя панель с датой -->
+        <!-- Obere Leiste mit Datum -->
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -20,14 +20,14 @@
                        FontSize="16" FontWeight="Bold" Margin="10" Foreground="White" />
         </StackPanel>
 
-        <!-- Контейнер для списка задач и панели с деталями -->
+        <!-- Container für die Aufgabenliste und das Detailpanel -->
         <Grid Grid.Row="1" Margin="10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <!-- Список задач -->
+            <!-- Aufgabenliste -->
             <Border BorderBrush="Gray" BorderThickness="1" Grid.Column="0">
                 <ListBox ItemsSource="{Binding TodoList}" SelectedItem="{Binding SelectedToDo}" MouseDoubleClick="ListBox_MouseDoubleClick">
                     <ListBox.ItemTemplate>
@@ -51,14 +51,14 @@
                     </ListBox.ItemTemplate>
                     <ListBox.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Удалить" Click="DeleteTask_Click" CommandParameter="{Binding SelectedToDo}" />
-                            <MenuItem Header="Копировать" Click="CopyTask_Click" />
+                            <MenuItem Header="Löschen" Click="DeleteTask_Click" CommandParameter="{Binding SelectedToDo}" />
+                            <MenuItem Header="Kopieren" Click="CopyTask_Click" />
                         </ContextMenu>
                     </ListBox.ContextMenu>
                 </ListBox>
             </Border>
 
-            <!-- Панель с деталями задачи -->
+            <!-- Detailpanel der Aufgabe -->
             <StackPanel x:Name="TaskDetailsPanel" Grid.Column="1" Background="#F5F5F5" Margin="10" Visibility="Collapsed">
                 <TextBox Text="{Binding SelectedToDo.Bezeichnung}" FontSize="20" FontWeight="Bold" Margin="5"/>
                 <TextBlock Text="Beschreibung" FontSize="16" Margin="5"/>
@@ -67,14 +67,14 @@
                 <TextBox Text="{Binding SelectedToDo.Prioritaet}" FontSize="14" Margin="5"/>
                 <CheckBox Content="Aufgabe abgeschlossen" IsChecked="{Binding SelectedToDo.IstAbgeschlossen}" Margin="5"/>
 
-                <!-- Элемент для отображения фотографии -->
+                <!-- Element zur Anzeige eines Fotos -->
                 <Image Source="{Binding SelectedToDo.FotoPath}" Width="200" Height="150" Margin="5" HorizontalAlignment="Left"/>
 
                 <Button Content="Ändern" Width="100" Height="35" Margin="5" Click="ChangeTask_Click"/>
             </StackPanel>
         </Grid>
 
-        <!-- Кнопки для добавления новой задачи и закрытия окна -->
+        <!-- Buttons zum Hinzufügen einer neuen Aufgabe und zum Schließen des Fensters -->
         <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" VerticalAlignment="Center" Margin="10" Grid.Row="2">
             <Button Width="180" Height="40" Margin="5" Click="AddNewTask_Click">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -90,17 +90,17 @@
             </Button>
         </StackPanel>
 
-        <!-- Панель для выбора новой даты (скрыта по умолчанию) -->
+        <!-- Panel zur Auswahl eines neuen Datums (standardmäßig ausgeblendet) -->
         <StackPanel x:Name="DatePickerPanel" Grid.Row="1" Grid.Column="0" Visibility="Collapsed" Margin="10" Width="200" HorizontalAlignment="Left">
-            <TextBlock Text="Выберите новую дату для задачи" FontSize="14" Margin="5"/>
+            <TextBlock Text="Wählen Sie ein neues Datum für die Aufgabe" FontSize="14" Margin="5"/>
             <DatePicker x:Name="TaskDueDatePicker" Margin="5" SelectedDateChanged="TaskDueDatePicker_SelectedDateChanged"/>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button x:Name="ConfirmCopyButton" Content="Подтвердить" Margin="5" Width="100" Click="ConfirmCopyButton_Click"/>
-                <Button x:Name="CancelCopyButton" Content="Отмена" Margin="5" Width="100" Click="CancelCopyButton_Click"/>
+                <Button x:Name="ConfirmCopyButton" Content="Bestätigen" Margin="5" Width="100" Click="ConfirmCopyButton_Click"/>
+                <Button x:Name="CancelCopyButton" Content="Abbrechen" Margin="5" Width="100" Click="CancelCopyButton_Click"/>
             </StackPanel>
         </StackPanel>
 
-        <!-- Добавление TextBlock для отображения количества задач (слева внизу) -->
+        <!-- TextBlock zur Anzeige der Anzahl der Aufgaben (unten links) -->
         <TextBlock HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10" FontSize="16" Grid.Row="2" Text="{Binding TodoAnzahl, StringFormat='Aufgaben: {0}'}" />
     </Grid>
 </Window>

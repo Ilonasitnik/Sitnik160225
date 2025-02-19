@@ -6,134 +6,144 @@ using System.Threading.Tasks;
 
 namespace Sitnik160225
 {
+    // ViewModel für die Verwaltung der ToDo-Aufgaben
     internal class ToDoViewModel : INotifyPropertyChanged
     {
-        // Observable collection to hold the ToDo items
+        // ObservableCollection zur Speicherung der Aufgaben (ToDos)
         public ObservableCollection<ToDo> TodoList { get; set; }
 
-        // Repository to interact with the database
+        // Repository für die Interaktion mit der Datenbank (ToDoRepo verwaltet die Daten)
         private ToDoRepo _repo;
 
-        // Selected task in the UI
+        // Die derzeit ausgewählte Aufgabe im UI
         private ToDo _selectedToDo;
 
-        // Total count of tasks (used for UI display)
+        // Die Gesamtzahl der Aufgaben, die im UI angezeigt wird
         private int _todoAnzahl;
 
-        // Currently selected date
+        // Das aktuell ausgewählte Datum
         private DateTime _selectedDate;
 
-
-        // Constructor to initialize the ViewModel
+        // Konstruktor zur Initialisierung des ViewModels
         public ToDoViewModel()
         {
-            TodoList = new ObservableCollection<ToDo>();
-            SelectedDate = DateTime.Now; // Set the default date to now
-            _repo = new ToDoRepo(); // Initialize the repository
+            TodoList = new ObservableCollection<ToDo>(); // Initialisiert die ToDo-Liste
+            SelectedDate = DateTime.Now; // Setzt das Standarddatum auf das aktuelle Datum
+            _repo = new ToDoRepo(); // Initialisiert das Repository zur Datenverwaltung
         }
 
-        // Property for SelectedToDo
+        #region Eigenschaften SelectedToDo,SelectedDate,TodoAnzahl
+
+        // Eigenschaft für die aktuell ausgewählte Aufgabe (SelectedToDo)
         public ToDo SelectedToDo
         {
             get { return _selectedToDo; }
             set
             {
-                if (_selectedToDo != value)
+                if (_selectedToDo != value) // Überprüft, ob sich der Wert geändert hat
                 {
                     _selectedToDo = value;
-                    InformGUI(nameof(SelectedToDo)); // Notify UI about the change
+                    InformGUI(nameof(SelectedToDo)); // Benachrichtigt die UI über die Änderung
                 }
             }
         }
 
-        // Property for SelectedDate
+        // Eigenschaft für das ausgewählte Datum (SelectedDate)
         public DateTime SelectedDate
         {
             get { return _selectedDate; }
             set
             {
-                if (_selectedDate != value)
+                if (_selectedDate != value) // Überprüft, ob sich das Datum geändert hat
                 {
                     _selectedDate = value;
-                    InformGUI(nameof(SelectedDate)); // Notify UI about the change
+                    InformGUI(nameof(SelectedDate)); // Benachrichtigt die UI über die Änderung
                 }
             }
         }
 
-        // Property for TodoAnzahl (Total count of tasks)
+        // Eigenschaft für die Gesamtzahl der Aufgaben (TodoAnzahl)
         public int TodoAnzahl
         {
             get { return _todoAnzahl; }
             set
             {
-                if (_todoAnzahl != value)
+                if (_todoAnzahl != value) // Überprüft, ob sich die Anzahl geändert hat
                 {
                     _todoAnzahl = value;
-                    InformGUI(nameof(TodoAnzahl)); // Notify UI about the change
+                    InformGUI(nameof(TodoAnzahl)); // Benachrichtigt die UI über die Änderung
                 }
             }
         }
 
-        // Method to load tasks for the selected date
+        #endregion
+
+        #region Methoden LoadTasksForSelectedDateAsyn,AddToDo,RemoveToDo
+
+        // Asynchrone Methode zum Laden der Aufgaben für das ausgewählte Datum
         public async Task LoadTasksForSelectedDateAsync(DateTime selectedDate)
         {
             try
             {
-                // Загружаем задачи из репозитория
+                // Lädt die Aufgaben aus dem Repository für das ausgewählte Datum
                 var tasks = await _repo.GetToDosByDateAsync(selectedDate);
 
-                // Очищаем текущий список
+                // Leert die aktuelle Liste
                 TodoList.Clear();
 
-                // Добавляем задачи в коллекцию
+                // Fügt die geladenen Aufgaben der Liste hinzu
                 foreach (var task in tasks)
                 {
                     TodoList.Add(task);
                 }
 
-                // Обновляем количество задач
+                // Aktualisiert die Anzahl der Aufgaben
                 TodoAnzahl = TodoList.Count;
-                Console.WriteLine($"Загружено задач: {TodoAnzahl}");
+                Console.WriteLine($"Aufgabenanzahl: {TodoAnzahl}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Ошибка при загрузке задач: {ex.Message}");
+                // Fehlerbehandlung, falls das Laden der Aufgaben fehlschlägt
+                Console.WriteLine($"Fehler beim Laden der Aufgaben: {ex.Message}");
             }
         }
 
-
-        // Method to add a new ToDo to the collection
+        // Methode zum Hinzufügen einer neuen Aufgabe zur Liste
         public void AddToDo(ToDo newToDo)
         {
-            // Avoid adding duplicate tasks based on ID
+            // Verhindert das Hinzufügen von Duplikaten basierend auf der ID
             if (!TodoList.Any(t => t.ID == newToDo.ID))
             {
-                TodoList.Add(newToDo);
-                TodoAnzahl = TodoList.Count; // Update task count
-                InformGUI(nameof(TodoAnzahl)); // Notify UI about the change
+                TodoList.Add(newToDo); // Fügt die Aufgabe der Liste hinzu
+                TodoAnzahl = TodoList.Count; // Aktualisiert die Anzahl der Aufgaben
+                InformGUI(nameof(TodoAnzahl)); // Benachrichtigt die UI über die Änderung
             }
         }
 
-        // Method to remove a ToDo from the collection
+        // Methode zum Entfernen einer Aufgabe aus der Liste
         public void RemoveToDo(ToDo toDo)
         {
             if (toDo != null)
             {
-                TodoList.Remove(toDo); // Remove task from collection
-                TodoAnzahl = TodoList.Count; // Update task count
-                InformGUI(nameof(TodoAnzahl)); // Notify UI about the change
+                TodoList.Remove(toDo); // Entfernt die Aufgabe aus der Liste
+                TodoAnzahl = TodoList.Count; // Aktualisiert die Anzahl der Aufgaben
+                InformGUI(nameof(TodoAnzahl)); // Benachrichtigt die UI über die Änderung
             }
         }
 
-        // Event to notify the UI about property changes
+        #endregion
+
+        #region Ereignisse InformGUI
+
+        // Ereignis zur Benachrichtigung der UI über Änderungen der Eigenschaften
         public event PropertyChangedEventHandler PropertyChanged;
 
-        // Method to notify the UI about changes in properties
+        // Methode zur Benachrichtigung der UI über Änderungen einer Eigenschaft
         private void InformGUI(string propName)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName)); // Löst das Ereignis aus
         }
-       
 
+        #endregion
     }
 }
